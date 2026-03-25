@@ -17,22 +17,80 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        function Navbar() {
+        const { useState } = React;
+
+        function LoginForm() {
             return (
-                <nav className="navbar">
-                    <div className="navbar-brand">
-                        Welcome to TaskManager
-                    </div>
-                    <div className="navbar-links">
-                        <a href="#signup" className="nav-btn signup-btn">Signup</a>
-                        <a href="#login" className="nav-btn login-btn">Login</a>
-                    </div>
-                </nav>
+                <div className="auth-container">
+                    <h2>Login</h2>
+                    <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input type="email" placeholder="Enter email" required />
+                        </div>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Enter password" required />
+                        </div>
+                        <button type="submit" className="submit-btn login-submit">Login</button>
+                    </form>
+                </div>
+            );
+        }
+
+        function SignupForm() {
+            return (
+                <div className="auth-container">
+                    <h2>Sign Up</h2>
+                    <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+                        <div className="form-group">
+                            <label>Name</label>
+                            <input type="text" placeholder="Enter name" required />
+                        </div>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input type="email" placeholder="Enter email" required />
+                        </div>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Enter password" required />
+                        </div>
+                        <button type="submit" className="submit-btn signup-submit">Sign Up</button>
+                    </form>
+                </div>
+            );
+        }
+
+        function App() {
+            const [view, setView] = useState('home');
+
+            return (
+                <div className="app-container">
+                    <nav className="navbar">
+                        <div className="navbar-brand" onClick={() => setView('home')} style={{ cursor: 'pointer' }}>
+                            Welcome to TaskManager
+                        </div>
+                        <div className="navbar-links">
+                            <button onClick={() => setView('signup')} className={`nav-btn signup-btn ${view === 'signup' ? 'active' : ''}`}>Signup</button>
+                            <button onClick={() => setView('login')} className={`nav-btn login-btn ${view === 'login' ? 'active' : ''}`}>Login</button>
+                        </div>
+                    </nav>
+                    <main className="main-content">
+                        {view === 'home' && (
+                            <div className="hero">
+                                <h1>Manage Your Tasks Efficiently</h1>
+                                <p>Select Login or Signup to get started.</p>
+                            </div>
+                        )}
+                        {view === 'login' && <LoginForm />}
+                        {view === 'signup' && <SignupForm />}
+                    </main>
+                </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<Navbar />);
+        root.render(<App />);
     </script>
 </body>
 </html>
