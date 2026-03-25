@@ -17,20 +17,38 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
-        function LoginForm() {
+        function LoginForm({ onLogin }) {
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    localStorage.setItem('currentUser', user.username);
+                    onLogin(user.username);
+                } else {
+                    setError('Invalid email or password');
+                }
+            };
+
             return (
                 <div className="auth-container">
                     <h2>Login</h2>
-                    <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+                    {error && <p className="error-message">{error}</p>}
+                    <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label>Email</label>
-                            <input type="email" placeholder="Enter email" required />
+                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" required />
                         </div>
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" placeholder="Enter password" required />
+                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" required />
                         </div>
                         <button type="submit" className="submit-btn login-submit">Login</button>
                     </form>
@@ -38,22 +56,43 @@
             );
         }
 
-        function SignupForm() {
+        function SignupForm({ onSignup }) {
+            const [name, setName] = useState('');
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                
+                if (users.find(u => u.email === email || u.username === name)) {
+                    setError('User with this email or username already exists');
+                    return;
+                }
+                
+                users.push({ username: name, email, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', name);
+                onSignup(name);
+            };
+
             return (
                 <div className="auth-container">
                     <h2>Sign Up</h2>
-                    <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+                    {error && <p className="error-message">{error}</p>}
+                    <form className="auth-form" onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>Name</label>
-                            <input type="text" placeholder="Enter name" required />
+                            <label>Username</label>
+                            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter username" required />
                         </div>
                         <div className="form-group">
                             <label>Email</label>
-                            <input type="email" placeholder="Enter email" required />
+                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter email" required />
                         </div>
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" placeholder="Enter password" required />
+                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" required />
                         </div>
                         <button type="submit" className="submit-btn signup-submit">Sign Up</button>
                     </form>
@@ -61,29 +100,108 @@
             );
         }
 
+        function TodoApp({ currentUser }) {
+            const [tasks, setTasks] = useState([]);
+            const [newTask, setNewTask] = useState('');
+
+            useEffect(() => {
+                const userTasks = JSON.parse(localStorage.getItem(`tasks_${currentUser}`) || '[]');
+                setTasks(userTasks);
+            }, [currentUser]);
+
+            const addTask = (e) => {
+                e.preventDefault();
+                if (!newTask.trim()) return;
+                const updatedTasks = [...tasks, newTask];
+                setTasks(updatedTasks);
+                localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(updatedTasks));
+                setNewTask('');
+            };
+
+            const removeTask = (index) => {
+                const updatedTasks = tasks.filter((_, i) => i !== index);
+                setTasks(updatedTasks);
+                localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(updatedTasks));
+            };
+
+            return (
+                <div className="todo-container">
+                    <h2>{currentUser}'s To-Do List</h2>
+                    <form onSubmit={addTask} className="todo-form">
+                        <input 
+                            type="text" 
+                            value={newTask} 
+                            onChange={(e) => setNewTask(e.target.value)} 
+                            placeholder="Add a new task..." 
+                        />
+                        <button type="submit">Add Task</button>
+                    </form>
+                    <ul className="task-list">
+                        {tasks.length === 0 && <p className="empty-tasks">No tasks yet. Add one above!</p>}
+                        {tasks.map((task, idx) => (
+                            <li key={idx} className="task-item">
+                                <span>{task}</span>
+                                <button onClick={() => removeTask(idx)} className="delete-btn">Delete</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+
         function App() {
             const [view, setView] = useState('home');
+            const [currentUser, setCurrentUser] = useState(null);
+
+            useEffect(() => {
+                const loggedInUser = localStorage.getItem('currentUser');
+                if (loggedInUser) {
+                    setCurrentUser(loggedInUser);
+                    setView('todo');
+                }
+            }, []);
+
+            const handleLogin = (username) => {
+                setCurrentUser(username);
+                setView('todo');
+            };
+
+            const handleLogout = () => {
+                localStorage.removeItem('currentUser');
+                setCurrentUser(null);
+                setView('home');
+            };
 
             return (
                 <div className="app-container">
                     <nav className="navbar">
-                        <div className="navbar-brand" onClick={() => setView('home')} style={{ cursor: 'pointer' }}>
+                        <div className="navbar-brand" onClick={() => !currentUser && setView('home')} style={{ cursor: 'pointer' }}>
                             Welcome to TaskManager
                         </div>
                         <div className="navbar-links">
-                            <button onClick={() => setView('signup')} className={`nav-btn signup-btn ${view === 'signup' ? 'active' : ''}`}>Signup</button>
-                            <button onClick={() => setView('login')} className={`nav-btn login-btn ${view === 'login' ? 'active' : ''}`}>Login</button>
+                            {currentUser ? (
+                                <React.Fragment>
+                                    <span className="user-greeting">Welcome, {currentUser}</span>
+                                    <button onClick={handleLogout} className="nav-btn logout-btn">Logout</button>
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <button onClick={() => setView('signup')} className={`nav-btn signup-btn ${view === 'signup' ? 'active' : ''}`}>Signup</button>
+                                    <button onClick={() => setView('login')} className={`nav-btn login-btn ${view === 'login' ? 'active' : ''}`}>Login</button>
+                                </React.Fragment>
+                            )}
                         </div>
                     </nav>
                     <main className="main-content">
-                        {view === 'home' && (
+                        {!currentUser && view === 'home' && (
                             <div className="hero">
                                 <h1>Manage Your Tasks Efficiently</h1>
                                 <p>Select Login or Signup to get started.</p>
                             </div>
                         )}
-                        {view === 'login' && <LoginForm />}
-                        {view === 'signup' && <SignupForm />}
+                        {!currentUser && view === 'login' && <LoginForm onLogin={handleLogin} />}
+                        {!currentUser && view === 'signup' && <SignupForm onSignup={handleLogin} />}
+                        {currentUser && <TodoApp currentUser={currentUser} />}
                     </main>
                 </div>
             );
