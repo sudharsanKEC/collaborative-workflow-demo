@@ -173,3 +173,123 @@ button.nav-btn {
     cursor: pointer;
     outline: none;
 }
+
+.error-message {
+    color: #e53e3e;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    color: #e53e3e;
+    background-color: transparent;
+    border: 2px solid #e53e3e;
+}
+
+.logout-btn:hover {
+    background-color: #fff5f5;
+}
+
+.user-greeting {
+    font-weight: 600;
+    color: #4a5568;
+}
+
+/* Todo styles */
+.todo-container {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.todo-container h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.todo-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.todo-form input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.todo-form input:focus {
+    border-color: #4CAF50;
+}
+
+.todo-form button {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.todo-form button:hover {
+    background-color: #45a049;
+}
+
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.empty-tasks {
+    text-align: center;
+    color: #a0aec0;
+    font-style: italic;
+    padding: 1rem;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f7fafc;
+    border-radius: 6px;
+    border: 1px solid #edf2f7;
+}
+
+.task-item span {
+    color: #2d3748;
+    font-size: 1.05rem;
+    word-break: break-word;
+}
+
+.delete-btn {
+    padding: 0.4rem 0.8rem;
+    background-color: #fc8181;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 1rem;
+}
+
+.delete-btn:hover {
+    background-color: #f56565;
+}
