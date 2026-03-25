@@ -215,13 +215,3 @@ This project successfully demonstrates a **collaborative GitHub workflow**, ensu
 
 It reflects real-world software development practices used in industry environments.
 
----
-
-## 🚀 Future Enhancements
-
-* Backend integration (Node.js / Django)
-* Database support
-* Authentication security improvements
-* Deployment using cloud platforms
-
----
