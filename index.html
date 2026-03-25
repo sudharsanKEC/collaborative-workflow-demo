@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskManager</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function Navbar() {
+            return (
+                <nav className="navbar">
+                    <div className="navbar-brand">
+                        Welcome to TaskManager
+                    </div>
+                    <div className="navbar-links">
+                        <a href="#signup" className="nav-btn signup-btn">Signup</a>
+                        <a href="#login" className="nav-btn login-btn">Login</a>
+                    </div>
+                </nav>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Navbar />);
+    </script>
+</body>
+</html>
